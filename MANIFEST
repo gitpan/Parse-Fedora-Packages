@@ -1,0 +1,10 @@
+Build.PL
+CHANGES
+MANIFEST			This list of files
+META.yml
+Makefile.PL
+
+lib/Parse/Fedora/Packages.pm
+
+t/01-primary.t
+t/files/primary.xml
