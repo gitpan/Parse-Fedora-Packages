@@ -7,7 +7,7 @@ use Data::Dumper qw(Dumper);
 use Carp         qw();
 
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 NAME
 
@@ -24,31 +24,18 @@ Parse::Fedora::Packages - Parse Fedora package information
  print $all[0]->{name};
  print $all[0]->{version};
 
+=head1 METHODS
 
-=head1 WARNING
-
-This is an alpha relese, The API will change.
-
-=head1 TODO
-
-Provide parse_primary_gz("primary.xml.gz");
-
-=head1 AUTHOR
-
-Gabor Szabo <gabor@pti.co.il>
-
-=head1 COPYRIGHT
-
-Copyright (C) 2007 Gabor Szabo <gabor@pti.co.il>. All Rights Reserverd.
-
-This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
-
-=head1 SEE ALSO
-
-L<Parse::Debian::Packages>, L<Module::Packaged>, L<Module::Packaged::Report>
 
 =cut
 
+=head2 new
+
+Constructor
+
+  my $p = Parse::Fedora::Packages->new
+
+=cut
 sub new {
     my ($class) = @_;
     my $self = bless {}, $class;
@@ -56,6 +43,17 @@ sub new {
     return $self;
 }
 
+=head2 parse_primary
+
+Given a primary.xml file it will read it into memory and parse it.
+
+Returns nothing.
+
+Throws exception if the file is invalid xml.
+
+   $p->parse_primary("primary.xml");
+
+=cut
 sub parse_primary {
     my ($self, $filename) = @_;
     $self->{xml} = XMLin($filename, ForceArray => 1, KeyAttr => []);
@@ -69,10 +67,21 @@ sub parse_primary {
     return;
 }
 
+=head2 reported_count_packages
+
+returns list of packages (sub xml)
+
+=cut
 sub reported_count_packages {
     my ($self) = @_;
     return $self->{xml}{packages};
 }
+
+=head2 count_packages
+
+returns number of packages
+
+=cut
 sub count_packages {
     my ($self) = @_;
     return scalar @{ $self->{xml}{package} };
@@ -257,6 +266,30 @@ sub list_packages {
                  } } 
            grep { $_->{name}[0] =~ /$name/ } @{ $self->{xml}{package} };
 }
+
+=head1 WARNING
+
+This is an alpha relese, The API will change.
+
+=head1 TODO
+
+Provide parse_primary_gz("primary.xml.gz");
+
+=head1 AUTHOR
+
+Gabor Szabo <gabor@pti.co.il>
+
+=head1 COPYRIGHT
+
+Copyright (C) 2007-2008 Gabor Szabo <gabor@pti.co.il>. All Rights Reserverd.
+
+This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+L<Parse::Debian::Packages>, L<Module::Packaged>, L<Module::Packaged::Report>
+
+=cut
 
 
 

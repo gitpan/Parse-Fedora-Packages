@@ -2,6 +2,8 @@ use strict;
 use warnings;
 use Module::Build;
 
+use 5.006;
+
 my $builder = Module::Build->new(
     module_name           => 'Parse::Fedora::Packages',
     license               => 'perl',
@@ -14,6 +16,7 @@ my $builder = Module::Build->new(
     },
     build_requires        => {
         'Test::More'                => '0.47',
+        'Test::NoWarnings'          => '0',
     },
 );
 

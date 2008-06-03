@@ -1,6 +1,7 @@
 Build.PL
 CHANGES
 MANIFEST			This list of files
+README
 META.yml
 Makefile.PL
 
@@ -8,3 +9,7 @@ lib/Parse/Fedora/Packages.pm
 
 t/01-primary.t
 t/files/primary.xml
+
+xt/critic.t
+xt/pod-coverage.t
+xt/pod.t

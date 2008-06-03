@@ -6,6 +6,7 @@ WriteMakefile
           'VERSION_FROM' => 'lib/Parse/Fedora/Packages.pm',
           'PREREQ_PM' => {
                            'Test::More' => '0.47',
+                           'Test::NoWarnings' => '0',
                            'XML::Simple' => '0'
                          },
           'INSTALLDIRS' => 'site',
