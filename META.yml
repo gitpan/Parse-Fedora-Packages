@@ -1,22 +1,15 @@
----
-name: Parse-Fedora-Packages
-version: 0.04
-author:
-  - Gabor Szabo
-abstract: Parse Fedora package information
-license: perl
-resources:
-  license: http://dev.perl.org/licenses/
-requires:
-  XML::Simple: 0
-build_requires:
-  Test::More: 0.47
-  Test::NoWarnings: 0
-provides:
-  Parse::Fedora::Packages:
-    file: lib/Parse/Fedora/Packages.pm
-    version: 0.02
-generated_by: Module::Build version 0.2808
+--- #YAML:1.0
+name:                Parse-Fedora-Packages
+version:             0.05
+abstract:            ~
+license:             ~
+author:              ~
+generated_by:        ExtUtils::MakeMaker version 6.42
+distribution_type:   module
+requires:     
+    Test::More:                    0.47
+    Test::NoWarnings:              0
+    XML::Simple:                   0
 meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+    url:     http://module-build.sourceforge.net/META-spec-v1.3.html
+    version: 1.3

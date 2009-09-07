@@ -7,7 +7,7 @@ use Data::Dumper qw(Dumper);
 use Carp         qw();
 
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 =head1 NAME
 
