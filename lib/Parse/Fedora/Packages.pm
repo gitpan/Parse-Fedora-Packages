@@ -7,7 +7,7 @@ use Data::Dumper qw(Dumper);
 use Carp         qw();
 
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 NAME
 
@@ -15,14 +15,17 @@ Parse::Fedora::Packages - Parse Fedora package information
 
 =head1 SYNOPSIS
 
- use Fedora;
- my $f = Fedora->new;
+ use Parse::Fedora::Packages;
+ my $f = Parse::Fedora::Packages->new;
  $f->parse_primary("primary.xml");
 
- my @all = $p->list_packages();
+ my @all = $f->list_packages();
 
  print $all[0]->{name};
  print $all[0]->{version};
+ print $all[0]->{summary};
+ print $all[0]->{description};
+ print $all[0]->{url};
 
 =head1 METHODS
 
@@ -260,9 +263,17 @@ sub list_packages {
         }
     }
     #return grep { print STDERR "$_->{name}[0]\n" } @{ $self->{xml}{package} };
+
     return map { {
                     name => $_->{name}[0],
                     version => $_->{version}[0]{ver},
+                    description => eval { 
+                    			  $_->{description}[0] =~ s/\n/\ /g;
+                    			  return $_->{description}[0];
+                    			},
+                    summary => $_->{summary}[0],
+                    url => $_->{url}[0],
+                    
                  } } 
            grep { $_->{name}[0] =~ /$name/ } @{ $self->{xml}{package} };
 }
