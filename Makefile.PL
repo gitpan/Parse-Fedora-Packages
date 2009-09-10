@@ -7,7 +7,9 @@ WriteMakefile
           'PREREQ_PM' => {
                            'Test::More' => '0.47',
                            'Test::NoWarnings' => '0',
-                           'XML::Simple' => '0'
+                           'XML::Simple' => '0',
+                           'Archive::Extract' => '0',
+                           'LWP::UserAgent' => '0'
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],

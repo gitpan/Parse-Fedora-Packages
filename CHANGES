@@ -1,3 +1,8 @@
+v0.06 2009.09.10
+
+    Added new method parse_primary_gz (online and offline)
+    Fixed pod syntax errors
+
 v0.02 2008.06.03
 
     Add README file

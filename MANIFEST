@@ -8,7 +8,9 @@ Makefile.PL
 lib/Parse/Fedora/Packages.pm
 
 t/01-primary.t
+t/02-primary_gz.t
 t/files/primary.xml
+t/files/primary.xml.gz
 
 xt/critic.t
 xt/pod-coverage.t

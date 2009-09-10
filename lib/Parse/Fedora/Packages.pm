@@ -2,12 +2,14 @@ package Parse::Fedora::Packages;
 use strict;
 use warnings;
 
+use Archive::Extract;
 use XML::Simple  qw(XMLin);
 use Data::Dumper qw(Dumper);
 use Carp         qw();
+use LWP::UserAgent;
 
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 =head1 NAME
 
@@ -16,10 +18,10 @@ Parse::Fedora::Packages - Parse Fedora package information
 =head1 SYNOPSIS
 
  use Parse::Fedora::Packages;
- my $f = Parse::Fedora::Packages->new;
- $f->parse_primary("primary.xml");
+ my $p = Parse::Fedora::Packages->new;
+ $p->parse_primary("primary.xml");
 
- my @all = $f->list_packages();
+ my @all = $p->list_packages();
 
  print $all[0]->{name};
  print $all[0]->{version};
@@ -39,6 +41,7 @@ Constructor
   my $p = Parse::Fedora::Packages->new
 
 =cut
+
 sub new {
     my ($class) = @_;
     my $self = bless {}, $class;
@@ -57,8 +60,10 @@ Throws exception if the file is invalid xml.
    $p->parse_primary("primary.xml");
 
 =cut
+
 sub parse_primary {
     my ($self, $filename) = @_;
+    #if (-e $filename
     $self->{xml} = XMLin($filename, ForceArray => 1, KeyAttr => []);
     # keys of xml: packages, xmlns, xmlns:rpm package
     # value of package is an array
@@ -70,11 +75,60 @@ sub parse_primary {
     return;
 }
 
+=head2 parse_primary_gz
+
+Given a primary.xml.gz file it will read it into memory and parse it. If a URL is passed as argument, it will download it.
+
+Returns nothing.
+
+   $p->parse_primary_gz('primary.xml');
+
+   # Or
+
+   $p->parse_primary_gz('http://mirror.yandex.ru/fedora/tigro/non-free/11/i386/repodata/primary.xml.gz');
+
+=cut
+
+sub parse_primary_gz {
+
+    my ($self, $gz) = @_;
+    my $gz_file;
+    if ($gz =~ /^(?:https?)|(?:ftps?):\/\//) {
+    						my $ua = LWP::UserAgent->new;
+    						$ua->agent("Parse::Fedora::Packages $VERSION");
+						($gz_file) = $gz =~ /.+\/(.*?\.gz)$/;
+    						my $response = $ua->get($gz,':content_file' => $gz_file);            # File is created here
+    						if (!$response->is_success) { Carp::croak $response->status_line; }
+    					     }
+    					     
+    else { $gz_file = $gz; }
+    
+    my $ae = Archive::Extract->new( archive => $gz_file);
+    my $ok = $ae->extract or Carp::croak $ae->error;
+    my $file_list = $ae->files;
+
+    my $xml_file = @$file_list[0];
+    $self->{xml} = XMLin($xml_file, ForceArray => 1, KeyAttr => []);
+
+    ### Cleaning up mess
+    
+    unlink($gz_file);
+    for (@$file_list) { unlink $_; }
+    return;
+    
+    
+        					     
+    
+
+
+}
+
 =head2 reported_count_packages
 
 returns list of packages (sub xml)
 
 =cut
+
 sub reported_count_packages {
     my ($self) = @_;
     return $self->{xml}{packages};
@@ -85,6 +139,7 @@ sub reported_count_packages {
 returns number of packages
 
 =cut
+
 sub count_packages {
     my ($self) = @_;
     return scalar @{ $self->{xml}{package} };
@@ -244,7 +299,8 @@ sub count_packages {
                    ],
             'type' => 'rpm'
           },
-=end
+
+=end doc
 
 =cut
 
@@ -286,9 +342,11 @@ This is an alpha relese, The API will change.
 
 Provide parse_primary_gz("primary.xml.gz");
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Gabor Szabo <gabor@pti.co.il>
+Gabor Szabo, E<lt>gabor@pti.co.ilE<gt>
+
+Currently maintained by rarbox, E<lt>rarbox@cpan.orgE<gt>
 
 =head1 COPYRIGHT
 
@@ -302,7 +360,4 @@ L<Parse::Debian::Packages>, L<Module::Packaged>, L<Module::Packaged::Report>
 
 =cut
 
-
-
 1;
-
